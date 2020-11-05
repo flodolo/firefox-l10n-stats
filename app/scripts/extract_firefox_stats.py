@@ -30,6 +30,8 @@ def main():
         if locale not in ['', 'en-US'] and locale not in nightly_locales:
             nightly_locales.append(locale)
     nightly_locales.sort()
+    # Remove ja-JP-mac
+    nightly_locales.remove('ja-JP-mac')
 
     query = '''
 {
