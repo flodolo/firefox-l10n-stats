@@ -23,7 +23,7 @@ $html_detail_body .= "
 ";
 
 // Completion chart.js graph for total/missing strings
-$cache_id = "locale_numbers_{$requested_locale}";
+$cache_id = "locale_numbers_{$requested_locale}_{$requested_timeframe}";
 if (! $locale_numbers = Cache::getKey($cache_id, 60 * 60)) {
     $locale_numbers = [
         'missing'     => [],
@@ -32,6 +32,9 @@ if (! $locale_numbers = Cache::getKey($cache_id, 60 * 60)) {
     ];
 
     foreach ($full_stats as $date => $date_data) {
+        if (new DateTime($date) < $stop_date) {
+            continue;
+        }
         if (isset($date_data[$requested_locale])) {
             $locale_numbers['suggestions'][] = $date_data[$requested_locale]['suggestions'];
             $locale_numbers['completion'][] = $date_data[$requested_locale]['completion'];
@@ -48,6 +51,9 @@ $graph_data = "<script type=\"text/javascript\">\n";
 
 $labels = '    let dates = [';
 foreach (array_keys($full_stats) as $date) {
+    if (new DateTime($date) < $stop_date) {
+        continue;
+    }
     $labels .= '"' . $date . '",';
 }
 $labels .= "]\n";
