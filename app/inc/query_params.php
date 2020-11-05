@@ -66,6 +66,22 @@ if (isset($_REQUEST['timeframe'])) {
     $requested_timeframe = 'all';
 }
 
+$today = new DateTime();
+switch ($requested_timeframe) {
+    case '1m':
+        $stop_date = $today->modify('-1 month');
+        break;
+    case '3m':
+        $stop_date = $today->modify('-3 month');
+        break;
+    case '6m':
+        $stop_date = $today->modify('-6 month');
+        break;
+    default:
+        $stop_date = new DateTime('1900-01-01');
+        break;
+}
+
 // Create HTML selectors
 $html_supported_locales = '';
 foreach ($supported_locales as $supported_locale) {

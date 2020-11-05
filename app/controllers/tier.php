@@ -42,10 +42,13 @@ foreach ($latest_stats as $locale => $locale_data) {
 }
 
 // Completion chart.js graph for all requested locales
-$cache_id = "locales_progression_{$requested_tier}";
+$cache_id = "locales_progression_{$requested_tier}_{$requested_timeframe}";
 if (! $locales_progression = Cache::getKey($cache_id, 60 * 60)) {
     $locales_progression = [];
     foreach ($full_stats as $date => $date_data) {
+        if (new DateTime($date) < $stop_date) {
+            continue;
+        }
         foreach ($requested_locales as $locale) {
             $completion = isset($date_data[$locale])
                 ? $date_data[$locale]['completion']
@@ -60,6 +63,9 @@ $graph_data = "<script type=\"text/javascript\">\n";
 
 $labels = '    let dates = [';
 foreach (array_keys($full_stats) as $date) {
+    if (new DateTime($date) < $stop_date) {
+        continue;
+    }
     $labels .= '"' . $date . '",';
 }
 $labels .= "]\n";
