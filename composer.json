@@ -1,0 +1,14 @@
+{
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/mozilla-l10n/phpclass-cache"
+        }
+    ],
+    "require": {
+        "mozillal10n/cache": "~0.1"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "~2.16"
+    }
+}
