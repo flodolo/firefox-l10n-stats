@@ -33,65 +33,19 @@ foreach ($latest_stats as $locale => $locale_data) {
     $html_detail_body .= "
 	<tr class=\"{$class}\">
         <th>{$locale}</th>
-        <td class=\"number\">{$locale_data['completion']} %</td>
-        <td class=\"number\">{$locale_data['translated']}</td>
-        <td class=\"number\">{$locale_data['missing']}</td>
-        <td class=\"number\">{$locale_data['suggestions']}</td>
+        <td>{$locale_data['completion']} %</td>
+        <td>{$locale_data['translated']}</td>
+        <td>{$locale_data['missing']}</td>
+        <td>{$locale_data['suggestions']}</td>
     </tr>
     ";
 }
 
-// Check locales at risk (constantly increasing number of pending
-// suggestions or missing strings)
-$cache_id = "locales_risk_{$requested_tier}_{$requested_timeframe}";
-if (! $locales_risk = Cache::getKey($cache_id, 60 * 60)) {
-    // Start from the last day available, and move back in time
-    $previous_date = '';
-    $available_dates = array_keys($full_stats);
-    rsort($available_dates);
-
-    foreach ($available_dates as $current_date) {
-        if (new DateTime($current_date) < $stop_date) {
-            break;
-        }
-        $current_data = $full_stats[$current_date];
-        if ($previous_date == '') {
-            // No previous data, all locales among those requested are at risk
-            $locales_risk = [
-                'missing'     => array_intersect(array_keys($current_data), $requested_locales),
-                'suggestions' => array_intersect(array_keys($current_data), $requested_locales),
-            ];
-        } else {
-            foreach ($locales_risk['missing'] as $locale) {
-                // If the number of missing strings decreased or the locale was
-                // added half-way, consider it not at risk.
-                $previous_data = $full_stats[$previous_date][$locale];
-                if (! isset($previous_data) || $previous_data['missing'] < $current_data[$locale]['missing']) {
-                    $locales_risk['missing'] = array_diff($locales_risk['missing'], [$locale]);
-                }
-            }
-            foreach ($locales_risk['suggestions'] as $locale) {
-                // If the number of pending suggestions decreased or the locale
-                // was added half-way, consider it not at risk.
-                $previous_data = $full_stats[$previous_date][$locale];
-                if (! isset($previous_data) || $previous_data['suggestions'] < $current_data[$locale]['suggestions']) {
-                    $locales_risk['suggestions'] = array_diff($locales_risk['suggestions'], [$locale]);
-                }
-            }
-        }
-        $previous_date = $current_date;
-    }
-    Cache::setKey($cache_id, $locales_risk);
-}
-
 // Completion chart.js graph for all requested locales
-$cache_id = "locales_progression_{$requested_tier}_{$requested_timeframe}";
+$cache_id = "locales_progression_{$requested_tier}";
 if (! $locales_progression = Cache::getKey($cache_id, 60 * 60)) {
     $locales_progression = [];
     foreach ($full_stats as $date => $date_data) {
-        if (new DateTime($date) < $stop_date) {
-            continue;
-        }
         foreach ($requested_locales as $locale) {
             $completion = isset($date_data[$locale])
                 ? $date_data[$locale]['completion']
@@ -106,9 +60,6 @@ $graph_data = "<script type=\"text/javascript\">\n";
 
 $labels = '    let dates = [';
 foreach (array_keys($full_stats) as $date) {
-    if (new DateTime($date) < $stop_date) {
-        continue;
-    }
     $labels .= '"' . $date . '",';
 }
 $labels .= "]\n";
@@ -118,17 +69,13 @@ $graph_data .= "    let locales_data = {};\n";
 foreach ($requested_locales as $locale) {
     $graph_data .= "    locales_data[\"{$locale}\"] = [" . implode(',', $locales_progression[$locale]) . "]\n";
 }
-
-$legend_status = $requested_tier != 'all'
-    ? "position: 'right'"
-    : 'display: false';
 $graph_data .= "
     let ctx = document.getElementById(\"localesChartCompletion\");
     let localesChart = new Chart(ctx, {
     type: 'line',
     options: {
         legend: {
-            {$legend_status}
+            display: false
         },
         scales: {
             xAxes: [{
@@ -141,9 +88,6 @@ $graph_data .= "
                 scaleLabel: {
                     display: true,
                     labelString: 'Completion'
-                },
-                ticks: {
-                    stepSize: 0.5
                 }
             }]
         },

@@ -14,5 +14,4 @@
 </table>
 
 <canvas id="localeChartCompletion" class="chart"></canvas>
-<canvas id="localeChartMissing" class="chart"></canvas>
 <canvas id="localeChartSuggested" class="chart"></canvas>

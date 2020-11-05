@@ -7,7 +7,6 @@ if (! file_exists("{$root_folder}/app/data/data.json")) {
 $json_file = file_get_contents("{$root_folder}/app/data/data.json");
 $full_stats = json_decode($json_file, true);
 $dates = array_keys($full_stats);
-sort($dates);
 $last_day = end($dates);
 $latest_stats = $full_stats[$last_day];
 
@@ -65,22 +64,6 @@ if (isset($_REQUEST['timeframe'])) {
     }
 } else {
     $requested_timeframe = 'all';
-}
-
-$last_date = new DateTime($last_day);
-switch ($requested_timeframe) {
-    case '1m':
-        $stop_date = $last_date->modify('-1 month');
-        break;
-    case '3m':
-        $stop_date = $last_date->modify('-3 month');
-        break;
-    case '6m':
-        $stop_date = $last_date->modify('-6 month');
-        break;
-    default:
-        $stop_date = new DateTime('1900-01-01');
-        break;
 }
 
 // Create HTML selectors
