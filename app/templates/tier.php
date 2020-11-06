@@ -1,5 +1,7 @@
 <h2>Locales at risk</h2>
-<p>Increasing number of missing strings:
+<p>Constantly increasing values in the selected timeframe for:</p>
+<ul>
+<li>Missing strings:
 <?php
   if (empty($locales_risk['missing'])) {
     echo('none');
@@ -9,8 +11,8 @@
     }
   }
 ?>
-</p>
-<p>Increasing number of pending suggestions:
+</li>
+<li>Pending suggestions:
  <?php
   if (empty($locales_risk['suggestions'])) {
     echo('none');
@@ -20,7 +22,8 @@
     }
   }
 ?>
-</p>
+</li>
+</ul>
 
 <h2>Locales data</h2>
 <table class="table table-bordered" id="tier_details">
