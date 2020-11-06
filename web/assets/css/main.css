@@ -1,0 +1,77 @@
+/* CSS for main view */
+
+.list {
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    line-height: 1.7;
+    font-size: 16px;
+    width: 800px;
+    margin: 6px 0 24px;
+}
+
+.list a {
+    padding-left: 2px;
+}
+
+.container {
+    padding: 15px 0;
+}
+
+table {
+    font-size: 13px;
+}
+
+.table td {
+    padding: 0.2rem 0.6rem;
+}
+
+.table tr th {
+    background: #eee;
+    padding: 0.2rem 0.6rem;
+}
+
+table.dataTable thead .sorting:before,
+table.dataTable thead .sorting:after,
+table.dataTable thead .sorting_asc:before,
+table.dataTable thead .sorting_asc:after,
+table.dataTable thead .sorting_desc:before,
+table.dataTable thead .sorting_desc:after,
+table.dataTable thead .sorting_asc_disabled:before,
+table.dataTable thead .sorting_asc_disabled:after,
+table.dataTable thead .sorting_desc_disabled:before,
+table.dataTable thead .sorting_desc_disabled:after {
+    bottom: 0.3em;
+}
+
+th.locale {
+    white-space: nowrap;
+}
+
+td.success,
+tr.success {
+    background: #dff0d8;
+}
+
+td.warning,
+tr.warning {
+    background: #fcf8e3;
+}
+
+td.danger,
+tr.danger {
+    background: #f2dede;
+}
+
+.number {
+    text-align: right;
+}
+
+.chart {
+    margin-top: 20px;
+}
+
+#lastupdate {
+    text-align: right;
+    margin-top: 30px;
+}
