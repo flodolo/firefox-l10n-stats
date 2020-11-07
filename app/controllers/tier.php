@@ -46,7 +46,7 @@ foreach ($latest_stats as $locale => $locale_data) {
 $cache_id = "locales_risk_{$requested_tier}_{$requested_timeframe}";
 if (! $locales_risk = Cache::getKey($cache_id, 60 * 60)) {
     // Start from the last day available, and move back in time
-    $previous_date = '';
+    $next_date = '';
     $available_dates = array_keys($full_stats);
     rsort($available_dates);
 
@@ -55,31 +55,34 @@ if (! $locales_risk = Cache::getKey($cache_id, 60 * 60)) {
             break;
         }
         $current_data = $full_stats[$current_date];
-        if ($previous_date == '') {
-            // No previous data, all locales among those requested are at risk
+        if ($next_date == '') {
+            // First iteration in the cycle, consider all locales at risk
             $locales_risk = [
                 'missing'     => array_intersect(array_keys($current_data), $requested_locales),
                 'suggestions' => array_intersect(array_keys($current_data), $requested_locales),
             ];
         } else {
-            foreach ($locales_risk['missing'] as $locale) {
-                // If the number of missing strings decreased or the locale was
-                // added half-way, consider it not at risk.
-                $previous_data = $full_stats[$previous_date][$locale];
-                if (! isset($previous_data) || $previous_data['missing'] < $current_data[$locale]['missing']) {
-                    $locales_risk['missing'] = array_diff($locales_risk['missing'], [$locale]);
-                }
-            }
-            foreach ($locales_risk['suggestions'] as $locale) {
-                // If the number of pending suggestions decreased or the locale
-                // was added half-way, consider it not at risk.
-                $previous_data = $full_stats[$previous_date][$locale];
-                if (! isset($previous_data) || $previous_data['suggestions'] < $current_data[$locale]['suggestions']) {
-                    $locales_risk['suggestions'] = array_diff($locales_risk['suggestions'], [$locale]);
+            foreach (['missing', 'suggestions'] as $type) {
+                foreach ($locales_risk[$type] as $locale) {
+                    $at_risk = true;
+
+                    if (isset($full_stats[$next_date][$locale])) {
+                        $next_day_data = $full_stats[$next_date][$locale][$type];
+                        // If the number decreased or stays at zero,
+                        // locale is not at risk
+                        if ($next_day_data == 0 || $current_data[$locale][$type] > $next_day_data) {
+                            $at_risk = false;
+                        }
+                    }
+
+                    if (! $at_risk) {
+                        // Remove the locale
+                        $locales_risk[$type] = array_diff($locales_risk[$type], [$locale]);
+                    }
                 }
             }
         }
-        $previous_date = $current_date;
+        $next_date = $current_date;
     }
     Cache::setKey($cache_id, $locales_risk);
 }

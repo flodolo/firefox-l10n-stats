@@ -1,4 +1,5 @@
 .php_cs.cache
+app/data/data.json
 cache/*.cache
 composer.lock
 php.ini
