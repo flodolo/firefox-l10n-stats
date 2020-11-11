@@ -61,6 +61,14 @@ if (! $locales_risk = Cache::getKey($cache_id, 60 * 60)) {
                 'missing'     => array_intersect(array_keys($current_data), $requested_locales),
                 'suggestions' => array_intersect(array_keys($current_data), $requested_locales),
             ];
+            // Remove locales with 0 items on the last day available
+            foreach (['missing', 'suggestions'] as $type) {
+                foreach ($locales_risk[$type] as $locale) {
+                    if ($current_data[$locale][$type] == 0) {
+                        $locales_risk[$type] = array_diff($locales_risk[$type], [$locale]);
+                    }
+                }
+            }
         } else {
             foreach (['missing', 'suggestions'] as $type) {
                 foreach ($locales_risk[$type] as $locale) {
@@ -68,9 +76,8 @@ if (! $locales_risk = Cache::getKey($cache_id, 60 * 60)) {
 
                     if (isset($full_stats[$next_date][$locale])) {
                         $next_day_data = $full_stats[$next_date][$locale][$type];
-                        // If the number decreased or stays at zero,
-                        // locale is not at risk
-                        if ($next_day_data == 0 || $current_data[$locale][$type] > $next_day_data) {
+                        // If the number decreased, locale is not at risk
+                        if ($current_data[$locale][$type] > $next_day_data) {
                             $at_risk = false;
                         }
                     }
