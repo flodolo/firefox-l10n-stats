@@ -32,7 +32,7 @@ foreach ($latest_stats as $locale => $locale_data) {
     }
     $html_detail_body .= "
 	<tr class=\"{$class}\">
-        <th>{$locale}</th>
+        <th><a href=\"?locale={$locale}&timeframe={$requested_timeframe}\">{$locale}</a></th>
         <td class=\"number\">{$locale_data['completion']} %</td>
         <td class=\"number\">{$locale_data['translated']}</td>
         <td class=\"number\">{$locale_data['missing']}</td>
