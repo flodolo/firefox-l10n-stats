@@ -41,8 +41,15 @@ foreach ($latest_stats as $locale => $locale_data) {
     ";
 }
 
-// Check locales at risk (constantly increasing number of pending
-// suggestions or missing strings)
+/*
+    Check locales at risk. A locale is at riks when the number of pending
+    suggestions or missing strings keeps growing over a certain number of
+    days.
+*/
+
+// After how many days is a locale at risk
+$risk_threshold = 7;
+
 $cache_id = "locales_risk_{$requested_tier}_{$requested_timeframe}";
 if (! $locales_risk = Cache::getKey($cache_id, 60 * 60)) {
     // Start from the last day available, and move back in time
@@ -50,28 +57,29 @@ if (! $locales_risk = Cache::getKey($cache_id, 60 * 60)) {
     $available_dates = array_keys($full_stats);
     rsort($available_dates);
 
+    $locales_risk = [
+        'missing'     => [],
+        'suggestions' => [],
+    ];
     foreach ($available_dates as $current_date) {
         if (new DateTime($current_date) < $stop_date) {
             break;
         }
         $current_data = $full_stats[$current_date];
         if ($next_date == '') {
-            // First iteration in the cycle, consider all locales at risk
-            $locales_risk = [
-                'missing'     => array_intersect(array_keys($current_data), $requested_locales),
-                'suggestions' => array_intersect(array_keys($current_data), $requested_locales),
-            ];
-            // Remove locales with 0 items on the last day available
             foreach (['missing', 'suggestions'] as $type) {
-                foreach ($locales_risk[$type] as $locale) {
-                    if ($current_data[$locale][$type] == 0) {
-                        $locales_risk[$type] = array_diff($locales_risk[$type], [$locale]);
+                // In the first iteration, all locales are potentially at risk, unless they're at 0
+                $locales_to_check = array_intersect(array_keys($current_data), $requested_locales);
+                foreach ($locales_to_check as $locale) {
+                    // Only store locales with more than 0 items
+                    if ($current_data[$locale][$type] != 0) {
+                        $locales_risk[$type][$locale] = 1;
                     }
                 }
             }
         } else {
             foreach (['missing', 'suggestions'] as $type) {
-                foreach ($locales_risk[$type] as $locale) {
+                foreach ($locales_risk[$type] as $locale => $locale_days) {
                     $at_risk = true;
 
                     if (isset($full_stats[$next_date][$locale])) {
@@ -82,15 +90,28 @@ if (! $locales_risk = Cache::getKey($cache_id, 60 * 60)) {
                         }
                     }
 
-                    if (! $at_risk) {
+                    if ($at_risk) {
+                        // Add to the number of days
+                        $locales_risk[$type][$locale] += 1;
+                    } else {
                         // Remove the locale
-                        $locales_risk[$type] = array_diff($locales_risk[$type], [$locale]);
+                        unset($locales_risk[$type][$locale]);
                     }
                 }
             }
         }
         $next_date = $current_date;
     }
+
+    // Remove locales that are below the threshold number of days
+    foreach (['missing', 'suggestions'] as $type) {
+        foreach ($locales_risk[$type] as $locale => $locale_days) {
+            if ($locale_days < $risk_threshold) {
+                unset($locales_risk[$type][$locale]);
+            }
+        }
+    }
+
     Cache::setKey($cache_id, $locales_risk);
 }
 

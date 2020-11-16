@@ -6,8 +6,8 @@
   if (empty($locales_risk['missing'])) {
     echo('none');
   } else {
-    foreach ($locales_risk['missing'] as $locale) {
-      echo "<a href='?locale={$locale}&timeframe={$requested_timeframe}'>{$locale}</a> ";
+    foreach ($locales_risk['missing'] as $locale => $locale_days) {
+      echo "<a href='?locale={$locale}&timeframe={$requested_timeframe}' title='{$locale_days} days'>{$locale}</a> ";
     }
   }
 ?>
@@ -17,8 +17,8 @@
   if (empty($locales_risk['suggestions'])) {
     echo('none');
   } else {
-    foreach ($locales_risk['suggestions'] as $locale) {
-      echo "<a href='?locale={$locale}&timeframe={$requested_timeframe}'>{$locale}</a> ";
+    foreach ($locales_risk['suggestions'] as $locale => $locale_days) {
+      echo "<a href='?locale={$locale}&timeframe={$requested_timeframe}' title='{$locale_days} days'>{$locale}</a> ";
     }
   }
 ?>
