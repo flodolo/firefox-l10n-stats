@@ -84,8 +84,9 @@ if (! $locales_risk = Cache::getKey($cache_id, 60 * 60)) {
 
                     if (isset($full_stats[$next_date][$locale])) {
                         $next_day_data = $full_stats[$next_date][$locale][$type];
-                        // If the number decreased, locale is not at risk
-                        if ($current_data[$locale][$type] > $next_day_data) {
+                        // If the number decreased, or was at 0 the day before,
+                        // locale is not at risk
+                        if ($current_data[$locale][$type] == 0 || $current_data[$locale][$type] > $next_day_data) {
                             $at_risk = false;
                         }
                     }
