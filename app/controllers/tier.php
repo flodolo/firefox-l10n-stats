@@ -18,6 +18,9 @@ $table_header = '
     <th>Pending suggestions</th>
 ';
 
+$avg_completion = 0;
+$count_locales = 0;
+
 foreach ($latest_stats as $locale => $locale_data) {
     if (! in_array($locale, $requested_locales)) {
         continue;
@@ -39,7 +42,11 @@ foreach ($latest_stats as $locale => $locale_data) {
         <td class=\"number\">{$locale_data['suggestions']}</td>
     </tr>
     ";
+    $avg_completion += $locale_data['completion'];
+    $count_locales += 1;
 }
+
+$avg_completion = round($avg_completion / $count_locales, 2);
 
 /*
     Check locales at risk. A locale is at riks when the number of pending

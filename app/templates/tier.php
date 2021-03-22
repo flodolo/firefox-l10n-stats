@@ -26,6 +26,7 @@
 </ul>
 
 <h2>Locales data</h2>
+<p>Average completion: <?php echo $avg_completion; ?>%.</p>
 <table class="table table-bordered" id="tier_details">
   <thead>
     <tr>
