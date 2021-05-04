@@ -62,7 +62,7 @@ $timeframes = [
     '1m'  => '1 month',
     '3m'  => '3 months',
     '6m'  => '6 months',
-    'all' => 'everything',
+    'all' => 'Everything',
 ];
 if (isset($_REQUEST['timeframe'])) {
     $requested_timeframe = htmlspecialchars($_REQUEST['timeframe']);
@@ -98,7 +98,10 @@ foreach ($supported_locales as $supported_locale) {
 
 $html_supported_tiers = '';
 foreach ($tiers as $tier_name => $tier_info) {
-    $html_supported_tiers .= "<a href=\"?tier={$tier_name}&timeframe={$requested_timeframe}\">{$tier_info['label']}</a> ";
+    $html_supported_tiers .= "<a href=\"?tier={$tier_name}&timeframe={$requested_timeframe}\">{$tier_info['label']}</a>";
+    if ($tier_name !== array_key_last($tiers)) {
+        $html_supported_tiers .= ' · ';
+    }
 }
 
 $html_supported_timeframes = '';
@@ -106,5 +109,8 @@ foreach ($timeframes as $timeframe_name => $timeframe_label) {
     $additional_params = $requested_locale == 'all'
         ? "&tier={$requested_tier}"
         : "&locale={$requested_locale}";
-    $html_supported_timeframes .= "<a href=\"?timeframe={$timeframe_name}{$additional_params}\">{$timeframe_label}</a> ";
+    $html_supported_timeframes .= "<a href=\"?timeframe={$timeframe_name}{$additional_params}\">{$timeframe_label}</a>";
+    if ($timeframe_name !== array_key_last($timeframes)) {
+        $html_supported_timeframes .= ' · ';
+    }
 }
