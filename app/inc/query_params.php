@@ -24,18 +24,24 @@ if (isset($_REQUEST['locale'])) {
     $requested_locale = 'all';
 }
 
+// Load locales
+$json_locales_file = file_get_contents("{$root_folder}/app/data/locales.json");
+$locales = json_decode($json_locales_file, true);
+
+
 // Check if a specific tier is requested. If a locale is already requested, ignore it.
 $tiers = [
     'tier1' => [
         'label'   => 'Tier 1',
-        'locales' => ['de', 'en-CA', 'en-GB', 'fr'],
+        'locales' => $locales['tier1'],
     ],
     'top15' => [
         'label'   => 'Top 15 locales',
-        'locales' => [
-            'cs', 'de', 'es-AR', 'es-ES', 'es-MX', 'fr', 'hu', 'id', 'it', 'ja',
-            'nl', 'pl', 'pt-BR', 'ru', 'zh-CN',
-        ],
+        'locales' => $locales['top15'],
+    ],
+    'release' => [
+        'label'   => 'Release locales',
+        'locales' => $locales['release'],
     ],
     'all'   => [
         'label'   => 'All locales',
