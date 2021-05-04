@@ -13,9 +13,7 @@ def main():
 
     release_locales = []
     url = "https://hg.mozilla.org/mozilla-central/raw-file/default/browser/locales/shipped-locales"
-    excluded_locales = [
-        "", "en-US", "ja-JP-mac"
-    ]
+    excluded_locales = ["", "en-US", "ja-JP-mac"]
 
     try:
         response = urlopen(url)
