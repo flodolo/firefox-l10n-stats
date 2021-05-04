@@ -15,6 +15,10 @@ def main():
     url = "https://hg.mozilla.org/mozilla-central/raw-file/default/browser/locales/shipped-locales"
     excluded_locales = ["", "en-US", "ja-JP-mac"]
 
+    json_file = os.path.join(data_folder, "locales.json")
+    with open(json_file, 'r') as f:
+        json_data = json.load(f)
+
     try:
         response = urlopen(url)
         for locale in response:
@@ -23,8 +27,9 @@ def main():
                 release_locales.append(locale)
         release_locales.sort()
 
-        with open(os.path.join(data_folder, "release_locales.json"), "w") as f:
-            json.dump(release_locales, f, sort_keys=True, indent=2)
+        json_data['release'] = release_locales
+        with open(json_file, "w") as f:
+            json.dump(json_data, f, sort_keys=True, indent=2)
     except Exception as e:
         print(e)
 
