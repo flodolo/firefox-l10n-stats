@@ -8,7 +8,23 @@ $json_file = file_get_contents("{$root_folder}/app/data/data.json");
 $full_stats = json_decode($json_file, true);
 $dates = array_keys($full_stats);
 sort($dates);
-$last_day = end($dates);
+
+// Allow to check for a specific end date.
+if (isset($_REQUEST['date'])) {
+    try {
+        $requested_date = $_REQUEST['date'];
+        $dt = new DateTime($_REQUEST['date']);
+        $last_day = $dt->format('Y-m-d');
+    }
+    catch (Exception $e) {
+        error_log("Requested date {$requested_date} can't be parsed");
+    }
+}
+
+if (! isset($last_day) || ! isset($full_stats[$last_day])) {
+    $last_day = end($dates);
+}
+$last_day_dt = new DateTime($last_day);
 $latest_stats = $full_stats[$last_day];
 
 $supported_locales = array_keys($latest_stats);

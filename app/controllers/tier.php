@@ -145,7 +145,8 @@ $graph_data = "<script type=\"text/javascript\">\n";
 
 $labels = '    let dates = [';
 foreach (array_keys($full_stats) as $date) {
-    if (new DateTime($date) < $stop_date) {
+    $dt = new DateTime($date);
+    if ($dt < $stop_date || $dt > $last_day_dt) {
         continue;
     }
     $labels .= '"' . $date . '",';
