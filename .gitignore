@@ -1,4 +1,4 @@
-.php_cs.cache
+.php-cs-fixer.cache
 app/data/data.json
 cache/*.cache
 composer.lock

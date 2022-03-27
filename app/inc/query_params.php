@@ -44,7 +44,6 @@ if (isset($_REQUEST['locale'])) {
 $json_locales_file = file_get_contents("{$root_folder}/app/data/locales.json");
 $locales = json_decode($json_locales_file, true);
 
-
 // Check if a specific tier is requested. If a locale is already requested, ignore it.
 $tiers = [
     'tier1' => [
