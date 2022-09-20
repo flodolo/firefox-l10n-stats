@@ -85,7 +85,7 @@ if (isset($_REQUEST['timeframe'])) {
         exit("Unknown timeframe {$requested_timeframe}");
     }
 } else {
-    $requested_timeframe = 'all';
+    $requested_timeframe = '6m';
 }
 
 $last_date = new DateTime($last_day);

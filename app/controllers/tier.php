@@ -167,8 +167,10 @@ $graph_data .= "
     let localesChart = new Chart(ctx, {
     type: 'line',
     options: {
-        legend: {
-            {$legend_status}
+        plugins: {
+            legend: {
+                {$legend_status}
+            }
         },
         scales: {
             xAxes: [{
