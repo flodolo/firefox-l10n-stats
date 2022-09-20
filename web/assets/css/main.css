@@ -48,18 +48,18 @@ th.locale {
     white-space: nowrap;
 }
 
-td.success,
-tr.success {
+table.dataTable tbody td.success,
+table.dataTable tbody tr.success {
     background: #dff0d8;
 }
 
-td.warning,
-tr.warning {
+table.dataTable tbody td.warning,
+table.dataTable tbody tr.warning {
     background: #fcf8e3;
 }
 
-td.danger,
-tr.danger {
+table.dataTable tbody td.danger,
+table.dataTable tbody tr.danger {
     background: #f2dede;
 }
 

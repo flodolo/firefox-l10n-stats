@@ -5,14 +5,14 @@
 	<title>Firefox L10N Dashboard - <?php echo $page_title; ?></title>
   <link rel="stylesheet" href="assets/css/bootstrap.min.css" type="text/css" media="all" />
   <link rel="stylesheet" href="assets/css/datatables.min.css" type="text/css" media="all" />
-  <link rel="stylesheet" href="assets/css/datatables.bootstrap4.min.css" type="text/css" media="all" />
+  <link rel="stylesheet" href="assets/css/dataTables.bootstrap5.min.css" type="text/css" media="all" />
   <link rel="stylesheet" href="assets/css/main.css" type="text/css" media="all" />
-  <script src="assets/js/jquery-3.5.1.min.js"></script>
+  <script src="assets/js/jquery-3.6.0.min.js"></script>
   <script src="assets/js/bootstrap.min.js"></script>
   <script src="assets/js/datatables.min.js"></script>
-  <script src="assets/js/datatables.bootstrap4.min.js"></script>
+  <script src="assets/js/dataTables.bootstrap5.min.js"></script>
   <script src="assets/js/main.js"></script>
-  <script src="assets/js/chart.bundle.min.js"></script>
+  <script src="assets/js/chart.min.js"></script>
 </head>
 <body>
   <div class="container" id="mainbody">

@@ -69,8 +69,10 @@ $graph_data .= "
     let completionChart = new Chart(ctxCompletion, {
     type: 'line',
     options: {
-        legend: {
-            position: \"right\"
+        plugins: {
+            legend: {
+                position: \"right\"
+            }
         },
         scales: {
             xAxes: [{
@@ -116,8 +118,10 @@ $graph_data .= "
     let missingChart = new Chart(ctxMissing, {
     type: 'line',
     options: {
-        legend: {
-            position: \"right\"
+        plugins: {
+            legend: {
+                position: \"right\"
+            }
         },
         scales: {
             xAxes: [{
@@ -163,8 +167,10 @@ $graph_data .= "
     let suggestedChart = new Chart(ctxSuggested, {
     type: 'line',
     options: {
-        legend: {
-            position: \"right\"
+        plugins: {
+            legend: {
+                position: \"right\"
+            }
         },
         scales: {
             xAxes: [{
