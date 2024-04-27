@@ -7,11 +7,11 @@ $html_detail_body = '';
 $locale_data = $latest_stats[$requested_locale];
 $percentage = $locale_data['completion'];
 if ($percentage == 100) {
-    $class = 'success';
+    $class = 'table-success';
 } elseif ($percentage > 50) {
-    $class = 'warning';
+    $class = 'table-warning';
 } else {
-    $class = 'danger';
+    $class = 'table-danger';
 }
 $html_detail_body .= "
 <tr class=\"{$class}\">
@@ -75,13 +75,13 @@ $graph_data .= "
             }
         },
         scales: {
-            xAxes: [{
+            x: {
                 type: 'time',
                 time: {
                     unit: 'day'
                 }
-            }],
-            yAxes: [{
+            },
+            y: {
                 scaleLabel: {
                     display: true,
                     labelString: 'Percentage of completion'
@@ -89,7 +89,7 @@ $graph_data .= "
                 ticks: {
                     stepSize: 0.5
                 }
-            }]
+            }
         },
         title: {
             display: true,
@@ -124,13 +124,13 @@ $graph_data .= "
             }
         },
         scales: {
-            xAxes: [{
+            x: {
                 type: 'time',
                 time: {
                     unit: 'day'
                 }
-            }],
-            yAxes: [{
+            },
+            y: {
                 scaleLabel: {
                     display: true,
                     labelString: 'Number of strings'
@@ -138,7 +138,7 @@ $graph_data .= "
                 ticks: {
                     stepSize: 1
                 }
-            }]
+            }
         },
         title: {
             display: true,
@@ -173,13 +173,13 @@ $graph_data .= "
             }
         },
         scales: {
-            xAxes: [{
+            x: {
                 type: 'time',
                 time: {
                     unit: 'day'
                 }
-            }],
-            yAxes: [{
+            },
+            y: {
                 scaleLabel: {
                     display: true,
                     labelString: 'Number of strings'
@@ -187,7 +187,7 @@ $graph_data .= "
                 ticks: {
                     stepSize: 1
                 }
-            }]
+            }
         },
         title: {
             display: true,

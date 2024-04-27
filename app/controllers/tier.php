@@ -27,11 +27,11 @@ foreach ($latest_stats as $locale => $locale_data) {
     }
     $percentage = $locale_data['completion'];
     if ($percentage == 100) {
-        $class = 'success';
+        $class = 'table-success';
     } elseif ($percentage > 50) {
-        $class = 'warning';
+        $class = 'table-warning';
     } else {
-        $class = 'danger';
+        $class = 'table-danger';
     }
     $html_detail_body .= "
 	<tr class=\"{$class}\">
@@ -173,13 +173,13 @@ $graph_data .= "
             }
         },
         scales: {
-            xAxes: [{
+            x: {
                 type: 'time',
                 time: {
                     unit: 'day'
                 }
-            }],
-            yAxes: [{
+            },
+            y: {
                 scaleLabel: {
                     display: true,
                     labelString: 'Completion'
@@ -187,7 +187,7 @@ $graph_data .= "
                 ticks: {
                     stepSize: 0.5
                 }
-            }]
+            }
         },
         title: {
             display: true,
