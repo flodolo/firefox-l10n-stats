@@ -23,7 +23,7 @@ def main():
         sys.exit(f"Data already available for {day_key}")
 
     # Get locales of Nightly builds
-    url = "https://hg.mozilla.org/mozilla-central/raw-file/default/browser/locales/all-locales"
+    url = "https://raw.githubusercontent.com/mozilla-firefox/firefox/refs/heads/main/browser/locales/all-locales"
     nightly_locales = []
     response = urlopen(url)
     for locale in response:

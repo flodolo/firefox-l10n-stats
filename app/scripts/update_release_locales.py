@@ -12,7 +12,7 @@ def main():
     )
 
     release_locales = []
-    url = "https://hg.mozilla.org/mozilla-central/raw-file/default/browser/locales/shipped-locales"
+    url = "https://raw.githubusercontent.com/mozilla-firefox/firefox/refs/heads/release/browser/locales/shipped-locales"
     excluded_locales = ["", "en-US", "ja-JP-mac"]
 
     json_file = os.path.join(data_folder, "locales.json")
