@@ -2,7 +2,7 @@
 
 import json
 import os
-from urllib.request import urlopen
+import requests
 
 
 def main():
@@ -16,18 +16,19 @@ def main():
     excluded_locales = ["", "en-US", "ja-JP-mac"]
 
     json_file = os.path.join(data_folder, "locales.json")
-    with open(json_file, 'r') as f:
+    with open(json_file, "r") as f:
         json_data = json.load(f)
 
     try:
-        response = urlopen(url)
-        for locale in response:
+        response = requests.get(url)
+        response.raise_for_status()
+        for locale in response.iter_lines():
             locale = locale.rstrip().decode()
             if locale not in excluded_locales and locale not in release_locales:
                 release_locales.append(locale)
         release_locales.sort()
 
-        json_data['release'] = release_locales
+        json_data["release"] = release_locales
         with open(json_file, "w") as f:
             json.dump(json_data, f, sort_keys=True, indent=2)
     except Exception as e:

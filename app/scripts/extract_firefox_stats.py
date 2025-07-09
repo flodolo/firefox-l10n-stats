@@ -2,10 +2,9 @@
 
 import json
 import os
+import requests
 import sys
 from datetime import datetime
-from urllib.parse import quote as urlquote
-from urllib.request import urlopen
 
 
 def main():
@@ -25,8 +24,9 @@ def main():
     # Get locales of Nightly builds
     url = "https://raw.githubusercontent.com/mozilla-firefox/firefox/refs/heads/main/browser/locales/all-locales"
     nightly_locales = []
-    response = urlopen(url)
-    for locale in response:
+    response = requests.get(url)
+    response.raise_for_status()
+    for locale in response.iter_lines():
         locale = locale.rstrip().decode()
         if locale not in ["", "en-US"] and locale not in nightly_locales:
             nightly_locales.append(locale)
@@ -34,55 +34,51 @@ def main():
     # Remove ja-JP-mac
     nightly_locales.remove("ja-JP-mac")
 
-    query = """
-{
-  firefox: project(slug: "firefox") {
-    localizations {
-        locale {
-            code
-        },
-        totalStrings,
-        missingStrings,
-        approvedStrings,
-        unreviewedStrings,
-    }
-  }
-}
-"""
-
     pontoon_locales = {}
     full_data[day_key] = {}
 
     try:
-        url = "https://pontoon.mozilla.org/graphql?query={}".format(urlquote(query))
-        response = urlopen(url)
-        json_data = json.load(response)
-        for project, project_data in json_data["data"].items():
-            for element in project_data["localizations"]:
-                locale = element["locale"]["code"]
+        url = "https://pontoon.mozilla.org/api/v2/projects/firefox"
+        url = "https://mozilla-pontoon-staging.herokuapp.com/api/v2/projects/firefox"
+        page = 1
+        while url:
+            print(f"Reading data (page {page})")
+            response = requests.get(url)
+            response.raise_for_status()
+            data = response.json()
+
+            for locale, locale_data in data.get("localizations", {}).items():
                 pontoon_locales[locale] = {
                     "completion": round(
-                        (float(element["totalStrings"] - element["missingStrings"]))
-                        / element["totalStrings"]
+                        (
+                            float(
+                                locale_data["total_strings"]
+                                - locale_data["missing_strings"]
+                            )
+                        )
+                        / locale_data["total_strings"]
                         * 100,
                         2,
                     ),
-                    "translated": element["approvedStrings"],
-                    "missing": element["missingStrings"],
-                    "suggestions": element["unreviewedStrings"],
+                    "translated": locale_data["approved_strings"],
+                    "missing": locale_data["missing_strings"],
+                    "suggestions": locale_data["unreviewed_strings"],
                 }
+            # Get the next page URL
+            url = data.get("next")
+            page += 1
+    except requests.RequestException as e:
+        print(f"Error fetching data: {e}")
+        sys.exit()
 
-        for locale in nightly_locales:
-            if not locale in pontoon_locales:
-                print(f"Warning: {locale} not available in Pontoon")
-            else:
-                full_data[day_key][locale] = pontoon_locales[locale]
+    for locale in nightly_locales:
+        if locale not in pontoon_locales:
+            print(f"Warning: {locale} not available in Pontoon")
+        else:
+            full_data[day_key][locale] = pontoon_locales[locale]
 
-        with open(data_file, "w") as f:
-            json.dump(full_data, f)
-
-    except Exception as e:
-        print(e)
+    with open(data_file, "w") as f:
+        json.dump(full_data, f)
 
 
 if __name__ == "__main__":
