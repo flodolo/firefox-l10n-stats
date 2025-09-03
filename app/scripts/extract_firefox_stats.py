@@ -39,7 +39,6 @@ def main():
 
     try:
         url = "https://pontoon.mozilla.org/api/v2/projects/firefox"
-        url = "https://mozilla-pontoon-staging.herokuapp.com/api/v2/projects/firefox"
         page = 1
         while url:
             print(f"Reading data (page {page})")
@@ -47,7 +46,8 @@ def main():
             response.raise_for_status()
             data = response.json()
 
-            for locale, locale_data in data.get("localizations", {}).items():
+            for locale_data in data.get("localizations", []):
+                locale = locale_data["locale"]["code"]
                 pontoon_locales[locale] = {
                     "completion": round(
                         (
